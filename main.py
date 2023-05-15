@@ -23,5 +23,5 @@ def download_youtube_playlist(playlist_url):
 
 
 if __name__ == '__main__':
-    playlist_url = 'https://youtube.com/playlist?list=PL685s7vGIQZhOImb6BSxZsDFUeo-TDAdU'
+    playlist_url = '<link>'
     download_youtube_playlist(playlist_url)
