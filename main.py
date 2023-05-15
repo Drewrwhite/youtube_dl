@@ -1,18 +1,27 @@
-import youtube_dl
+import os
+from pytube import Playlist
+from pytube.exceptions import AgeRestrictedError
 
 
 def download_youtube_playlist(playlist_url):
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'outtmpl': '%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s',
-        'noplaylist': False,
-    }
+    playlist = Playlist(playlist_url)
+    playlist_name = playlist.title
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([playlist_url])
+    parent_folder = os.path.join(os.getcwd(), 'data')
+    os.makedirs(parent_folder, exist_ok=True)
+
+    output_folder = os.path.join(parent_folder, playlist_name)
+    os.makedirs(output_folder, exist_ok=True)
+
+    for video in playlist.videos:
+        try:
+            video.streams.get_highest_resolution().download(output_path=output_folder)
+        except Exception as e:
+            print(f"Error occurred for video: {video.title}")
+            print(f"Error message: {str(e)}")
+            continue
 
 
 if __name__ == '__main__':
     playlist_url = 'https://youtube.com/playlist?list=PL685s7vGIQZhOImb6BSxZsDFUeo-TDAdU'
     download_youtube_playlist(playlist_url)
-    
